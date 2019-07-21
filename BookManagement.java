@@ -19,7 +19,7 @@ public class BookManagement {
 	{
 		Connection conn=null;
 		try {
-			conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/book_management","YOUR_USERNAME","YOUR_PASSWORD");
+			conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/book_management","root","root123");// please enter your credentials
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -39,7 +39,6 @@ public class BookManagement {
 	try {
 		stmt = conn.createStatement();
 	} catch (SQLException e) {
-		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
 	while (true)
@@ -177,6 +176,7 @@ public class BookManagement {
 			break;
 		case 6:
 			// Issue book to student
+			int flag=0;
 			System.out.println("Enter the student name and usn");
 			System.out.println("Enter book isbn and date of issuing");
 			String name=sc.nextLine();
@@ -185,6 +185,19 @@ public class BookManagement {
 			v=sc.nextLine();
 			String date=sc.nextLine();
 			try {
+				sql="select total from book where isbn="+is+";";
+				ResultSet result=stmt.executeQuery(sql);
+				result.next();
+				int tot=result.getInt("total");
+				if (tot==0)
+				{
+					System.out.println("Books Exhausted");
+				}
+				else
+				{
+				tot--;
+				sql="update book set total="+tot+" where isbn="+is+";";
+				stmt.executeUpdate(sql);
 				Date d= new SimpleDateFormat("dd/MM/yyyy").parse(date);
 				java.sql.Date sqlDate = new java.sql.Date(d.getTime());//issue date
 				Calendar c = Calendar.getInstance();
@@ -197,6 +210,7 @@ public class BookManagement {
 				stmt.executeUpdate(sql);
 				sql="insert into issue(usn,issuedate,returndate,isbn) values('"+usn+"','"+sqlDate+"','"+returnDate+"',"+is+");";
 				stmt.executeUpdate(sql);
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} catch (ParseException e) {
