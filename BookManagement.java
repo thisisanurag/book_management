@@ -1,5 +1,10 @@
 package com.cruds.BookManagement;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Scanner;
 public class BookManagement {
 	static
@@ -14,7 +19,7 @@ public class BookManagement {
 	{
 		Connection conn=null;
 		try {
-			conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/book_management","YOUR USERNAME","YOUR PASSWORD");//mention your username and password
+			conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/book_management","YOUR_USERNAME","YOUR_PASSWORD");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -34,6 +39,7 @@ public class BookManagement {
 	try {
 		stmt = conn.createStatement();
 	} catch (SQLException e) {
+		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
 	while (true)
@@ -60,7 +66,7 @@ public class BookManagement {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-			sql="insert into author values('"+authName+"',"+authNo+","+ISBN+");";
+			sql="insert into author values('"+authName+"',"+authNo+","+ISBN+") on duplicate key update authname=authname";
 			try {
 				stmt.executeUpdate(sql);
 			} catch (SQLException e) {
@@ -171,12 +177,84 @@ public class BookManagement {
 			break;
 		case 6:
 			// Issue book to student
+			System.out.println("Enter the student name and usn");
+			System.out.println("Enter book isbn and date of issuing");
+			String name=sc.nextLine();
+			String usn=sc.nextLine();
+			long is=sc.nextLong();
+			v=sc.nextLine();
+			String date=sc.nextLine();
+			try {
+				Date d= new SimpleDateFormat("dd/MM/yyyy").parse(date);
+				java.sql.Date sqlDate = new java.sql.Date(d.getTime());//issue date
+				Calendar c = Calendar.getInstance();
+				c.setTime(d);
+				//System.out.println(d);
+				c.add(Calendar.DAY_OF_MONTH, 7);
+				String returnDate = (new SimpleDateFormat("yyyy-MM-dd")).format(c.getTime());//return date
+				//System.out.println(returnDate);
+				sql="insert into student(usn,name) values('"+usn+"','"+name+"');";
+				stmt.executeUpdate(sql);
+				sql="insert into issue(usn,issuedate,returndate,isbn) values('"+usn+"','"+sqlDate+"','"+returnDate+"',"+is+");";
+				stmt.executeUpdate(sql);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			break;
 		case 7:
 			//List books issued to student based on USN number
+			System.out.println("Enter the usn to search for");
+			String usnSearch=sc.nextLine();
+			sql="select * from issue where usn='"+usnSearch+"';";
+			try {
+				ResultSet result=stmt.executeQuery(sql);
+				System.out.println("id--usn--isuuedate--returndate--isbn\n");
+				while (result.next())
+				{
+					int id=result.getInt("issueid");
+					System.out.print(id+"--");
+					String issueUsn=result.getString("usn");
+					System.out.print(issueUsn+"--");
+					java.sql.Date issueDate = result.getDate("issuedate");
+					System.out.print(issueDate+"--");
+					java.sql.Date returnDate = result.getDate("returndate");
+					System.out.print(returnDate+"--");
+					long isbn=result.getLong("isbn");
+					System.out.println(isbn);
+				}
+				System.out.println();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			break;
 		case 8:
 			//List books which are to be returned for current date
+			DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			Date Date = new Date();
+	        java.sql.Date sqlDate = new java.sql.Date(Date.getTime());
+	        sql="select * from issue where returndate='"+sqlDate+"';";
+			try {
+				ResultSet result=stmt.executeQuery(sql);
+				System.out.println("id--usn--isuuedate--returndate--isbn\n");
+				while (result.next())
+				{
+					int id=result.getInt("issueid");
+					System.out.print(id+"--");
+					String issueUsn=result.getString("usn");
+					System.out.print(issueUsn+"--");
+					java.sql.Date issueDate = result.getDate("issuedate");
+					System.out.print(issueDate+"--");
+					java.sql.Date returnDate = result.getDate("returndate");
+					System.out.print(returnDate+"--");
+					long isbn=result.getLong("isbn");
+					System.out.println(isbn);
+				}
+				System.out.println();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			break;
 		case 9:
 			System.exit(0);
