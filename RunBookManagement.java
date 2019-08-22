@@ -50,7 +50,6 @@ public class RunBookManagement {
                         Vector<Vector<String>> data= new Vector<>();
 			try {
 				ResultSet result=stmt.executeQuery(sql);
-				//System.out.println("isbn--title--category--total\n");
 				while (result.next())
 				{
                                     Vector<String> row1=new Vector<>();
@@ -59,17 +58,8 @@ public class RunBookManagement {
                                     row1.add(result.getString("category"));
                                     row1.add(result.getString("total"));
                                     data.add(row1);
-					/*long is=result.getLong("isbn");
-					System.out.print (is+"--");
-					String ti=result.getString("title");
-					System.out.print(ti+"--");
-					String ca=result.getString("category");
-					System.out.print(ca+"--");
-					int tot=result.getInt("total");
-					System.out.println(tot);*/
 				}
 				result.close();
-				//System.out.println();
 			}
 			catch (SQLException e) {
 				e.printStackTrace();
@@ -102,8 +92,6 @@ public class RunBookManagement {
 		sql="select * from book where locate('"+titleSearch+"',title)!=0";
 		try {
 			ResultSet result=stmt.executeQuery(sql);
-			//System.out.println("isbn--title--category--total\n");
-			
             colNames.add("isbn");
             colNames.add("title");
             colNames.add("category");
@@ -111,14 +99,6 @@ public class RunBookManagement {
             
 			while (result.next())
 			{
-				/*long is=result.getLong("isbn");
-				System.out.print (is+"--");
-				String ti=result.getString("title");
-				System.out.print(ti+"--");
-				String ca=result.getString("category");
-				System.out.print(ca+"--");
-				int tot=result.getInt("total");
-				System.out.println(tot);*/
 				 Vector<String> row1=new Vector<>();
                  row1.add(result.getString("isbn"));
                  row1.add(result.getString("title"));
@@ -139,9 +119,7 @@ public DefaultTableModel SearchCategory(String categorySearch)
 	Vector <String> colNames=new Vector<>();
 	sql="select * from book where locate('"+categorySearch+"',category)!=0";
 	try {
-		ResultSet result=stmt.executeQuery(sql);
-		//System.out.println("isbn--title--category--total\n");
-		
+		ResultSet result=stmt.executeQuery(sql);		
         colNames.add("isbn");
         colNames.add("title");
         colNames.add("category");
@@ -149,14 +127,6 @@ public DefaultTableModel SearchCategory(String categorySearch)
         
 		while (result.next())
 		{
-			/*long is=result.getLong("isbn");
-			System.out.print (is+"--");
-			String ti=result.getString("title");
-			System.out.print(ti+"--");
-			String ca=result.getString("category");
-			System.out.print(ca+"--");
-			int tot=result.getInt("total");
-			System.out.println(tot);*/
 			 Vector<String> row1=new Vector<>();
              row1.add(result.getString("isbn"));
              row1.add(result.getString("title"));
@@ -214,7 +184,6 @@ public int IssueBook(String name, String usn, long is, String date)
 
 public DefaultTableModel IssuedBooks(String usnSearch)
 {
-	//System.out.println("Enter the usn to search for");
 	sql="select * from issue where usn='"+usnSearch+"';";
 	Vector<Vector<String>> data= new Vector<>();
 	Vector <String> colNames=new Vector<>();
@@ -225,7 +194,6 @@ public DefaultTableModel IssuedBooks(String usnSearch)
     colNames.add("isbn");
 	try {
 		ResultSet result=stmt.executeQuery(sql);
-		//System.out.println("id--usn--isuuedate--returndate--isbn\n");
 		while (result.next())
 		{
 			Vector<String> row1=new Vector<>();
@@ -260,7 +228,6 @@ public DefaultTableModel curr()
     colNames.add("isbn");
 	try {
 		ResultSet result=stmt.executeQuery(sql);
-		//System.out.println("id--usn--isuuedate--returndate--isbn\n");
 		while (result.next())
 		{
 			Vector<String> row1=new Vector<>();
@@ -273,7 +240,6 @@ public DefaultTableModel curr()
 			row1.add(result.getString("isbn"));
 			data.add(row1);
 		}
-		//System.out.println();
 		result.close();
 	} catch (SQLException e) {
 		e.printStackTrace();
@@ -294,7 +260,6 @@ public DefaultTableModel SearchAuthor(String authSearch)
 	colNames.add("authnumber");
 	try {
 		ResultSet result=stmt.executeQuery(sql);
-		//System.out.println("isbn--title--category--total--author_name--author_phone\n");
 		while (result.next())
 		{
 			Vector<String> row1=new Vector<>();
